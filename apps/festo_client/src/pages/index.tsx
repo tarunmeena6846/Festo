@@ -7,11 +7,11 @@ import { Grid } from "@mui/material";
 import EventBar from "ui/components/EventBar";
 import FilterBar from "ui/components/Filterbar";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
+import { useState } from "react";
 export default function Home() {
   const breakpoint = 800;
   const isGreaterThanBreakpoint = useMediaQuery(`(min-width:${breakpoint}px)`);
-
+  
   return (
     <div>
       <Appbar />

@@ -11,6 +11,13 @@
   "dependencies": {
     "@mui/material": "^5.14.14",
     "@mui/material-next": "^6.0.0-alpha.107",
+    "@types/axios": "^0.14.0",
+    "@types/jsonwebtoken": "^9.0.4",
+    "@types/mongoose": "^5.11.97",
+    "axios": "^1.6.0",
+    "db": "*",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.0",
     "next": "13.5.6",
     "react": "^18",
     "react-dom": "^18",

@@ -95,6 +95,9 @@ export function Appbar() {
     console.log("tarun");
     UserName = session.data?.user?.name;
     console.log(session.data?.user?.name);
+    // if (session.data?.user?.name) {
+    //   // router.push("/");
+    // }
   } else {
     console.log("meena");
     UserName = "Hi Guest";
@@ -118,6 +121,13 @@ export function Appbar() {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem
+        onClick={() => {
+          signOut();
+        }}
+      >
+        Logout
+      </MenuItem>
     </Menu>
   );
 
@@ -227,16 +237,6 @@ export function Appbar() {
                 <AccountCircle />
               </IconButton>
               <Typography style={{ paddingTop: 12 }}>{UserName}</Typography>
-              <Button
-                size="large"
-                style={{
-                  color: "white",
-                  textTransform: "none", // Set textTransform to 'none'
-                }}
-                onClick={() => signOut()}
-              >
-                Logout
-              </Button>
             </Box>
           ) : (
             <Box
@@ -258,12 +258,15 @@ export function Appbar() {
               <Typography style={{ paddingTop: 12 }}>Hi Guest</Typography>
               <Button
                 size="large"
-                style={{ color: "white" }}
+                style={{
+                  color: "white",
+                  textTransform: "none", // Set textTransform to 'none'
+                }}
                 onClick={() => {
                   router.push("/signin");
                 }}
               >
-                Sign in
+                Sign In
               </Button>
             </Box>
           )}

@@ -26,7 +26,7 @@ function Copyright(props: any) {
   );
 }
 
-export function Signup() {
+export function Signup(props) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -36,6 +36,10 @@ export function Signup() {
       email: data.get("email"),
       password: data.get("password"),
     });
+    setEmail(data.get("email"));
+    setPassword(data.get("password"));
+    console.log(email, password);
+    props.onClick(data.get("email"), data.get("password"));
   };
 
   return (
@@ -55,27 +59,6 @@ export function Signup() {
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="given-name"
-                name="firstName"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                autoFocus
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="family-name"
-              />
-            </Grid>
             <Grid item xs={12}>
               <TextField
                 required

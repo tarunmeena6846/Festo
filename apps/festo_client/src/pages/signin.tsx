@@ -1,26 +1,26 @@
 import { Signin } from "ui";
-import Button from "@mui/material/Button";
-import { Card, Typography } from "@mui/material";
 import Appbar from "ui/components/AppBar";
-import { useSession, signIn, signOut } from "next-auth/react";
-
+import { useSession, signIn, getSession } from "next-auth/react";
+import axios from "axios";
+import { useRouter } from "next/router";
 function signin() {
-  //   console.log(Signup)
-  // const session = useSession();
-
-  // if (session) {
-  //   console.log("tarun");
-  //   console.log(session.data?.user?.name);
-  // } else {
-  //   console.log("meena");
-  // }
-
+  // console.log("tarun", );
+  const router = useRouter();
   return (
     <div>
       <Appbar />
       <Signin
-        onClick={(username, password) => {
-          alert(username);
+        onClick={async (username, password) => {
+          console.log("tarun username in signin route", username);
+          const response = await axios.post("/api/signin", {
+            username,
+            password,
+          });
+          console.log("tarun token is ", response.data.toke);
+          localStorage.setItem("token", response.data.token);
+          if (response.data.token) {
+            router.push("/");
+          }
         }}
       />
     </div>
@@ -28,3 +28,19 @@ function signin() {
 }
 function handleRegister() {}
 export default signin;
+
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: { session }, // Add any props you need here
+  };
+};

@@ -3,4 +3,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import NodeGeocoder from "node-geocoder";
 
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {};
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+
+
+    
+};

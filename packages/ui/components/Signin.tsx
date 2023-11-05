@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { signIn } from "next-auth/react";
-import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 function Copyright(props: any) {
   return (
@@ -31,6 +31,7 @@ function Copyright(props: any) {
 export function Signin(props) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const router = useRouter();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -40,10 +41,10 @@ export function Signin(props) {
     });
     setEmail(data.get("email"));
     setPassword(data.get("password"));
-
-    props.onClick(email, password);
+    console.log(email, password);
+    props.onClick(data.get("email"), data.get("password"));
   };
-  
+
   return (
     // <ThemeProvider theme={defaultTheme}>
     <Container component="main" maxWidth="xs">
@@ -101,8 +102,7 @@ export function Signin(props) {
             type="button"
             fullWidth
             variant="outlined"
-            onClick={async (e) => {
-              e.preventDefault();
+            onClick={async () => {
               await signIn("google");
             }}
             style={{
