@@ -11,8 +11,10 @@
   "dependencies": {
     "@types/mongoose": "^5.11.97",
     "db": "*",
+    "js-cookie": "^3.0.5",
     "mongoose": "^8.0.0",
     "next": "14.0.1",
+    "next-auth": "^4.24.4",
     "react": "^18",
     "react-dom": "^18",
     "ui": "*"
