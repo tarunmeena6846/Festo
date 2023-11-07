@@ -4,7 +4,7 @@ import { Card, Typography } from "@mui/material";
 import { Button } from "@mui/material";
 import Location from "./Location";
 import EventBar from "./EventBar";
-
+import axios from "axios";
 export const BASE_URL = "http://localhost:3001";
 interface CourseDataType {
   _id: string;
@@ -14,35 +14,35 @@ interface CourseDataType {
   imageLink: string;
 }
 type courseArray = CourseDataType[];
-export function Events() {
+export async function Events() {
   const [events, setEvents] = React.useState<courseArray>([]);
   // const setUserEmail = useSetRecoilState(userState);
-  React.useEffect(() => {
-    fetch(`${BASE_URL}/admin/courses`, {
-      method: "GET",
-      headers: {
-        "content-Type": "application/json",
-        authorization:
-          "Bearer " +
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRhcnVuQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5ODQ2MTE0OCwiZXhwIjoxNjk4NTQ3NTQ4fQ.IR9V7Qv5to3f4gUUD_VtIGmHz1-vkqUU5TArlzCUyhM",
-      },
-    })
-      .then((resp) => {
-        if (!resp.ok) {
-          throw new Error("Network response is not ok");
-        }
-        resp.json().then((data: courseArray) => {
-          console.log("tarun", data);
-          console.log("tarun meena");
-
-          setEvents(data);
-        });
-      })
-      .catch((error) => {
+  // React.useEffect(() => {
+  let response = await axios(`/admin/courses`, {
+    method: "GET",
+    headers: {
+      "content-Type": "application/json",
+      authorization:
+        "Bearer " +
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRhcnVuQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5ODQ2MTE0OCwiZXhwIjoxNjk4NTQ3NTQ4fQ.IR9V7Qv5to3f4gUUD_VtIGmHz1-vkqUU5TArlzCUyhM",
+    },
+  })
+    .then((resp) => {
+      if (!resp.ok) {
+        throw new Error("Network response is not ok");
+      }
+      resp.json().then((data: courseArray) => {
+        console.log("tarun", data);
         console.log("tarun meena");
-        console.error("Error signing in email", error);
+
+        setEvents(data);
       });
-  }, []);
+    })
+    .catch((error) => {
+      console.log("tarun meena");
+      console.error("Error signing in email", error);
+    });
+  // }, []);
 
   // console.log(events);
   // Add code to fetch events from the server
