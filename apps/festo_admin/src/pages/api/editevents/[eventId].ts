@@ -2,14 +2,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Event } from "db";
 import { ensureDbConnected } from "@/lib/dbconnect";
-type Data = {
-  name: string;
-  message?: string;
-};
+// type Data = {
+//   name: string;
+//   message?: string;
+// };
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse
 ) {
   await ensureDbConnected();
   //   const router = useRouter();
@@ -17,7 +17,7 @@ export default async function handler(
   const event = await Event.findById(eventId);
   console.log(event);
   if (event) {
-    res.status(201).json(event);
+    res.status(201).json({ event: event });
   } else {
     return res.status(400).send({ message: "Course not found" });
   }
