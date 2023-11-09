@@ -7,7 +7,7 @@ import { Button } from "@mui/material";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, Typography } from "@mui/material";
+import { Card, Typography, CardActionArea } from "@mui/material";
 
 interface eventDataType {
   _id: string;
@@ -63,8 +63,15 @@ export default function Home() {
     </div>
   );
 }
-
+// TODO make this SSR
 export function CoursesDisplay({ course }: { course: eventDataType }) {
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    // Handle the click event here, e.g., navigate to another page
+    router.push("/editEvent/" + course._id);
+  };
+
   return (
     <div style={{ margin: 10 }}>
       <Card
@@ -77,22 +84,24 @@ export function CoursesDisplay({ course }: { course: eventDataType }) {
           borderRadius: 15,
         }}
       >
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <img
-            src={course.imageLink}
-            style={{ width: 200, height: 300 }}
-            alt="Course"
-          ></img>
-        </div>
-        {/* <div style={{ display: "flex", justifyContent: "center", marginTop: 20 }}> */}
-        <div
-          style={{
-            display: "flex",
-            // flexDirection: "column",
-            alignItems: "center",
-            marginTop: 20,
-          }}
-        ></div>
+        <CardActionArea onClick={handleCardClick}>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <img
+              src={course.imageLink}
+              style={{ width: 200, height: 300 }}
+              alt="Course"
+            ></img>
+          </div>
+          {/* <div style={{ display: "flex", justifyContent: "center", marginTop: 20 }}> */}
+          <div
+            style={{
+              display: "flex",
+              // flexDirection: "column",
+              alignItems: "center",
+              marginTop: 20,
+            }}
+          ></div>
+        </CardActionArea>
       </Card>
       <div style={{ paddingTop: 20 }}>
         <Typography variant="h6">
