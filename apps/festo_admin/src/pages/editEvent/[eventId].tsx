@@ -39,7 +39,7 @@ function editEvent() {
       <Appbar></Appbar>
       <Grid container>
         <Grid item lg={8} md={12} sm={12} xs={12}>
-          {events && <UpdateCard event={events} />}
+          {events && <UpdateCard event={events} setEvent={setEvent} />}
         </Grid>
         <Grid item lg={4} md={12} sm={12} xs={12}>
           {events && <EventDisplay event={events} />}
@@ -84,51 +84,52 @@ function EventDisplay({ event }) {
   );
 }
 
-export default editEvent;
-function UpdateCard({ event }) {
+function UpdateCard({ event, setEvent }) {
   // console.log(course.title);
   const [title, setTitle] = React.useState(event.title);
   const [description, setDescription] = React.useState(event.description);
   const [price, setPrice] = React.useState(event.price);
   const [image, setImage] = React.useState(event.imageLink);
 
-  const handleUpdate = () => {
-    // console.log("at handle update ", title);
-    // console.log("tarun", localStorage.getItem("token"));
-    // // let { courseId } = useParams();
-    // fetch("http://localhost:3000/admin/courses/" + courseId, {
-    //   method: "PUT",
-    //   body: JSON.stringify({
-    //     title: title,
-    //     description: description,
-    //     imageLink: image,
-    //     price: price,
-    //   }),
-    //   headers: {
-    //     "content-Type": "application/json",
-    //     authorization: "Bearer " + localStorage.getItem("token"),
-    //   },
-    // })
-    //   .then((resp) => {
-    //     if (!resp.ok) {
-    //       throw new Error("Error in response from the server ");
-    //     }
-    //     resp.json().then(() => {
-    //       let updatedCourse = {
-    //         _id: courseId,
-    //         title: title,
-    //         description: description,
-    //         imageLink: image,
-    //         price: price,
-    //       };
-    //       // console.log("course id is ", updatedCourse._id);
-    //       // console.log("Course Updated sucessfully ", updatedCourse);
-    //       setCourse({ course: updatedCourse, isLoading: false });
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error in Updating the course", error);
-    //   });
+  const handleUpdate = async (
+    title,
+    description,
+    price,
+    image,
+    setEvent,
+    eventID
+  ) => {
+    console.log("at handle update ", title);
+    console.log("tarun", localStorage.getItem("token"));
+    // let { courseId } = useParams();
+    const response = await axios.put(
+      "/api/updateevent/" + eventID,
+      {
+        title: title,
+        description: description,
+        imageLink: image,
+        price: price,
+      },
+      {
+        headers: {
+          "content-Type": "application/json",
+          authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      }
+    );
+    if (response.status != 201) {
+      throw new Error("Error in response from the server ");
+    }
+    let updatedCourse = {
+      _id: eventID,
+      title: title,
+      description: description,
+      imageLink: image,
+      price: price,
+    };
+    // console.log("course id is ", updatedCourse._id);
+    // console.log("Course Updated sucessfully ", updatedCourse);
+    setEvent(updatedCourse);
   };
   return (
     <div style={{ display: "flex", justifyContent: "left" }}>
@@ -188,25 +189,27 @@ function UpdateCard({ event }) {
             <br />
             <br />
             <Button
-              // style={{ display: "flex", justifyContent: "left" }}
+              //   style={{ display: "flex", justifyContent: "left" }}
               variant="contained"
               color="primary"
-              onClick={
-                () => handleUpdate()
-                //   title,
-                //   description,
-                //   price,
-                //   image,
-                //   setCourse,
-                //   courseId
+              onClick={() =>
+                handleUpdate(
+                  title,
+                  description,
+                  price,
+                  image,
+                  setEvent,
+                  event._id
+                )
               }
             >
               Update
             </Button>
-            {/* </Card> */}
           </div>
         </div>
       </Card>
     </div>
   );
 }
+
+export default editEvent;
