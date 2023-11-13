@@ -26,21 +26,23 @@ function Copyright(props: any) {
   );
 }
 
-export function Signup(props) {
+export function Signup(props: {
+  onClick: (username: string, password: string) => void;
+}) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-    setEmail(data.get("email"));
-    setPassword(data.get("password"));
-    console.log(email, password);
-    props.onClick(data.get("email"), data.get("password"));
-  };
+  // const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   const data = new FormData(event.currentTarget);
+  //   // console.log({
+  //   //   email: data.get("email"),
+  //   //   password: data.get("password"),
+  //   // });
+  //   setEmail(data.get("email"));
+  //   setPassword(data.get("password"));
+  //   console.log(email, password);
+  //   props.onClick(data.get("email"), data.get("password"));
+  // };
 
   return (
     // <ThemeProvider theme={defaultTheme}>
@@ -57,7 +59,17 @@ export function Signup(props) {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box
+          component="form"
+          noValidate
+          onSubmit={async (event) => {
+            event.preventDefault(); // Prevent the default form submission
+
+            console.log("tarun in component ", email, password);
+            props.onClick(email, password);
+          }}
+          sx={{ mt: 3 }}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -67,6 +79,9 @@ export function Signup(props) {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -78,6 +93,9 @@ export function Signup(props) {
                 type="password"
                 id="password"
                 autoComplete="new-password"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
               />
             </Grid>
           </Grid>

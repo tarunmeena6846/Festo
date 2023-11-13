@@ -92,7 +92,7 @@ export function Appbar() {
   const session = useSession();
 
   if (session) {
-    console.log("tarun");
+    console.log("tarun at session");
     UserName = session.data?.user?.name;
     console.log(session.data?.user?.name);
     // if (session.data?.user?.name) {

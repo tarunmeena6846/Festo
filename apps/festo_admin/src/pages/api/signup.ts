@@ -22,11 +22,11 @@ export default async function handler(
     username: username,
     password: password,
   });
-  console.log(username, password);
-  console.log("tarun", bIsAdminPresent);
+  console.log("tarun at signup route ", username, password);
+  console.log("tarun badmin is present ", bIsAdminPresent);
   if (!bIsAdminPresent) {
     const obj = { username: req.body.username, password: req.body.password };
-    console.log(obj);
+    console.log("tarun obj is ", obj);
     const newAdmin = new Admin(obj);
     newAdmin.save();
     let token = jwt.sign(
@@ -35,7 +35,7 @@ export default async function handler(
         role: "admin",
       },
       SECRET,
-      { expiresIn: "24h" }
+      { expiresIn: "1h" }
     );
     res.status(200).json({ message: "Admin created successfully", token });
   } else {

@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
-import { Appbar } from "ui";
+import { Appbar, Signup } from "ui";
 import { Button } from "@mui/material";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -20,6 +20,9 @@ type eventArray = eventDataType[];
 export default function Home() {
   const router = useRouter();
   const [events, setEvents] = React.useState<eventArray>([]);
+  const [adminLoggedIn, setIsAdminLoggndIn] = React.useState<boolean | null>(
+    null
+  );
 
   useEffect(() => {
     async function fetchData() {
@@ -36,33 +39,84 @@ export default function Home() {
     }
 
     fetchData();
-  }, []); // The empty dependency array ensures this effect runs only once on mount
+  }, []);
+
+  useEffect(() => {
+    async function fetchAdminLoginInfo() {
+      try {
+        const response = await axios.get("/api/me", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        });
+
+        if (response.status !== 200) {
+          throw new Error("Admin not logged in");
+        }
+
+        const result = await response.data;
+        console.log("tarun result.data at after api/me", result.data);
+        setIsAdminLoggndIn(result.data);
+      } catch (error) {
+        console.error("Error fetching admin login data:", error);
+        setIsAdminLoggndIn(false); // Set adminLoggedIn to false on error
+      }
+    }
+
+    fetchAdminLoginInfo();
+  }, []);
+
+  if (adminLoggedIn === null) {
+    // Loading state, you can render a loading spinner or message here
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
       <Appbar></Appbar>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => router.push("/createEvent")}
-      >
-        Create
-      </Button>
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          // justifyContent: "center",
-          // marginLeft: 400,
-        }}
-      >
-        {events.map((event) => {
-          return <CoursesDisplay course={event} />;
-        })}
-      </div>
+      {adminLoggedIn ? (
+        <div>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => router.push("/createEvent")}
+          >
+            Create
+          </Button>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+            }}
+          >
+            {events.map((event) => {
+              return <CoursesDisplay course={event} />;
+            })}
+          </div>
+        </div>
+      ) : (
+        <div>
+          <Signup
+            onClick={async (username, password) => {
+              console.log("tarun username in index signup route", username);
+              const response = await axios.post("/api/signin", {
+                username,
+                password,
+              });
+              console.log("tarun token is ", response.data.token);
+              localStorage.setItem("token", response.data.token);
+              if (response.data.token) {
+                router.push("/");
+              }
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }
+
 // TODO make this SSR
 export function CoursesDisplay({ course }: { course: eventDataType }) {
   const router = useRouter();

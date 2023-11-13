@@ -14,6 +14,7 @@ export default async function handler(
   const { eventId } = req.query;
   console.log(eventId);
   console.log(req.body);
+  await ensureDbConnected();
   const newCourse = await Event.findByIdAndUpdate(eventId, req.body);
 
   console.log(newCourse);
