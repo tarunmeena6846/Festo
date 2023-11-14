@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
-import { Appbar, Signup } from "ui";
+import { Appbar, Signin, Signup } from "ui";
 import { Button } from "@mui/material";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -97,7 +97,7 @@ export default function Home() {
         </div>
       ) : (
         <div>
-          <Signup
+          <Signin
             onClick={async (username, password) => {
               console.log("tarun username in index signup route", username);
               const response = await axios.post("/api/signin", {
@@ -107,6 +107,7 @@ export default function Home() {
               console.log("tarun token is ", response.data.token);
               localStorage.setItem("token", response.data.token);
               if (response.data.token) {
+                setIsAdminLoggndIn(true);
                 router.push("/");
               }
             }}

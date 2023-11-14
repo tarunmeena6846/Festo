@@ -33,6 +33,6 @@ export default async function handler(
     res.status(200).json({ message: "Login sucessfull", token });
   } else {
     console.log("tarun in unauthorized");
-    res.json({ message: "unauthorized" });
+    res.status(401).json({ message: "unauthorized" });
   }
 }
