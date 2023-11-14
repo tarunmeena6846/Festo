@@ -42,6 +42,12 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const storedLoginStatus = localStorage.getItem("adminLoggedIn");
+    console.log("tarun setIsAdminLoggndIn is ", storedLoginStatus);
+    if (storedLoginStatus) {
+      setIsAdminLoggndIn(storedLoginStatus === "true");
+      return;
+    }
     async function fetchAdminLoginInfo() {
       try {
         const response = await axios.get("/api/me", {
@@ -58,6 +64,7 @@ export default function Home() {
         const result = await response.data;
         console.log("tarun result.data at after api/me", result.data);
         setIsAdminLoggndIn(result.data);
+        localStorage.setItem("adminLoggedIn", result.data.toString());
       } catch (error) {
         console.error("Error fetching admin login data:", error);
         setIsAdminLoggndIn(false); // Set adminLoggedIn to false on error

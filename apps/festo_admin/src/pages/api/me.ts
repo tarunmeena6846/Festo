@@ -12,7 +12,7 @@ export default async function handler(
   console.log("tarun is admin", isAdmin);
 
   if (isAdmin) {
-    res.status(200).send(isAdmin);
+    res.status(200).send({ data: isAdmin });
   } else {
     res.status(401).send("Unauthorised");
   }
