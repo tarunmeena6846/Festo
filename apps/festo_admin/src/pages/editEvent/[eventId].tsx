@@ -7,7 +7,6 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-
 import React from "react";
 import axios from "axios";
 function editEvent() {
@@ -90,12 +89,15 @@ function UpdateCard({ event, setEvent }) {
   const [description, setDescription] = React.useState(event.description);
   const [price, setPrice] = React.useState(event.price);
   const [image, setImage] = React.useState(event.imageLink);
+  const [category, setCategory] = React.useState(event.category);
+  const router = useRouter();
 
   const handleUpdate = async (
     title,
     description,
     price,
     image,
+    category,
     setEvent,
     eventID
   ) => {
@@ -187,6 +189,16 @@ function UpdateCard({ event, setEvent }) {
               fullWidth
             />
             <br />
+            <TextField
+              onChange={(e) => {
+                setCategory(e.target.value);
+              }}
+              label="Category"
+              variant="outlined"
+              value={category}
+              fullWidth
+            />
+            <br />
             <br />
             <Button
               //   style={{ display: "flex", justifyContent: "left" }}
@@ -198,12 +210,34 @@ function UpdateCard({ event, setEvent }) {
                   description,
                   price,
                   image,
+                  category,
                   setEvent,
                   event._id
                 )
               }
             >
               Update
+            </Button>
+            <Button
+              onClick={async (e) => {
+                // alert("button clicked")
+                const response = await axios.delete(
+                  "/api/deleteevent/" + event._id,
+                  {
+                    headers: {
+                      "content-Type": "application/json",
+                      authorization: "Bearer " + localStorage.getItem("token"),
+                    },
+                  }
+                );
+                if (response.status != 201) {
+                  throw new Error("Error in response from the server ");
+                }
+
+                router.push("/");
+              }}
+            >
+              Delete
             </Button>
           </div>
         </div>

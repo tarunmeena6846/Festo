@@ -5,6 +5,8 @@ import TextField from "@mui/material/TextField";
 import React from "react";
 import Button from "@mui/material/Button";
 import axios from "axios";
+import MenuItem from "@mui/material/MenuItem";
+
 function createEvent() {
   const router = useRouter();
 
@@ -12,6 +14,7 @@ function createEvent() {
   const [description, setDescription] = React.useState("");
   const [price, setPrice] = React.useState("");
   const [image, setImage] = React.useState("");
+  const [category, setCategory] = React.useState("");
 
   const [isChecked, setIsChecked] = React.useState(false);
 
@@ -20,6 +23,7 @@ function createEvent() {
   console.log(description);
   const addEvent = async () => {
     console.log("tarun", localStorage.getItem("token"));
+    console.log("tarun , category is ", category);
     try {
       const response = await axios.post(
         "/api/createevents",
@@ -29,6 +33,7 @@ function createEvent() {
           imageLink: image,
           price: price,
           published: isChecked,
+          category: category,
         },
         {
           headers: {
@@ -101,6 +106,22 @@ function createEvent() {
           />
           <br />
           <br />
+          <TextField
+            select
+            onChange={(e) => {
+              setCategory(e.target.value);
+            }}
+            label="Category"
+            variant="outlined"
+            value={category}
+            fullWidth
+          >
+            <MenuItem value="Movies">Movies</MenuItem>
+            <MenuItem value="Event">Event</MenuItem>
+            <MenuItem value="Party">Party</MenuItem>
+          </TextField>
+          <br></br>
+          <br></br>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Button variant="contained" color="primary" onClick={addEvent}>
               Create
