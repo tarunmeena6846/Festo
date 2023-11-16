@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Card, Typography, CardActionArea } from "@mui/material";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { isUserLoggedIn } from "@/store/atoms/user";
 
 interface eventDataType {
   _id: string;
@@ -20,9 +22,7 @@ type eventArray = eventDataType[];
 export default function Home() {
   const router = useRouter();
   const [events, setEvents] = React.useState<eventArray>([]);
-  const [adminLoggedIn, setIsAdminLoggndIn] = React.useState<boolean | null>(
-    null
-  );
+  const [adminLoggedIn, setIsAdminLoggndIn] = useRecoilState(isUserLoggedIn);
 
   useEffect(() => {
     async function fetchData() {
@@ -42,13 +42,16 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const storedLoginStatus = localStorage.getItem("adminLoggedIn");
-    console.log("tarun setIsAdminLoggndIn is ", storedLoginStatus);
-    if (storedLoginStatus) {
-      setIsAdminLoggndIn(storedLoginStatus === "true");
-      return;
-    }
+    // const storedLoginStatus = localStorage.getItem("adminLoggedIn");
+    // console.log("tarun setIsAdminLoggndIn is ", storedLoginStatus);
+    // if (storedLoginStatus) {
+    //   setIsAdminLoggndIn(storedLoginStatus === "true");
+    //   return;
+    // }
     async function fetchAdminLoginInfo() {
+      if (adminLoggedIn) {
+        return;
+      }
       try {
         const response = await axios.get("/api/me", {
           headers: {
@@ -64,7 +67,7 @@ export default function Home() {
         const result = await response.data;
         console.log("tarun result.data at after api/me", result.data);
         setIsAdminLoggndIn(result.data);
-        localStorage.setItem("adminLoggedIn", result.data.toString());
+        // localStorage.setItem("adminLoggedIn", result.data.toString());
       } catch (error) {
         console.error("Error fetching admin login data:", error);
         setIsAdminLoggndIn(false); // Set adminLoggedIn to false on error
@@ -106,13 +109,12 @@ export default function Home() {
         <div>
           <Signin
             onClick={async (username, password) => {
-              console.log("tarun username in index signup route", username);
+              console.log("tarun username in index siginin route");
               const response = await axios.post("/api/signin", {
                 username,
                 password,
               });
-              console.log("tarun token is ", response.data.token);
-              localStorage.setItem("token", response.data.token);
+              console.log("tarun token at sign in  ", response.data.token);
               if (response.data.token) {
                 setIsAdminLoggndIn(true);
                 router.push("/");
