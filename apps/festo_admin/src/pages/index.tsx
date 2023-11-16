@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
-import { Appbar, Signin, Signup } from "ui";
+import { Appbar, InitUser, Signin, Signup } from "ui";
 import { Button } from "@mui/material";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -23,7 +23,7 @@ export default function Home() {
   const router = useRouter();
   const [events, setEvents] = React.useState<eventArray>([]);
   const [adminLoggedIn, setIsAdminLoggndIn] = useRecoilState(isUserLoggedIn);
-
+  console.log("tarun aadminlogin in index.ts", adminLoggedIn);
   useEffect(() => {
     async function fetchData() {
       try {
@@ -41,41 +41,41 @@ export default function Home() {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    // const storedLoginStatus = localStorage.getItem("adminLoggedIn");
-    // console.log("tarun setIsAdminLoggndIn is ", storedLoginStatus);
-    // if (storedLoginStatus) {
-    //   setIsAdminLoggndIn(storedLoginStatus === "true");
-    //   return;
-    // }
-    async function fetchAdminLoginInfo() {
-      if (adminLoggedIn) {
-        return;
-      }
-      try {
-        const response = await axios.get("/api/me", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        });
+  // useEffect(() => {
+  //   // const storedLoginStatus = localStorage.getItem("adminLoggedIn");
+  //   // console.log("tarun setIsAdminLoggndIn is ", storedLoginStatus);
+  //   // if (storedLoginStatus) {
+  //   //   setIsAdminLoggndIn(storedLoginStatus === "true");
+  //   //   return;
+  //   // }
+  //   async function fetchAdminLoginInfo() {
+  //     if (adminLoggedIn) {
+  //       return;
+  //     }
+  //     try {
+  //       const response = await axios.get("/api/me", {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: "Bearer " + localStorage.getItem("token"),
+  //         },
+  //       });
 
-        if (response.status !== 200) {
-          throw new Error("Admin not logged in");
-        }
+  //       if (response.status !== 200) {
+  //         throw new Error("Admin not logged in");
+  //       }
 
-        const result = await response.data;
-        console.log("tarun result.data at after api/me", result.data);
-        setIsAdminLoggndIn(result.data);
-        // localStorage.setItem("adminLoggedIn", result.data.toString());
-      } catch (error) {
-        console.error("Error fetching admin login data:", error);
-        setIsAdminLoggndIn(false); // Set adminLoggedIn to false on error
-      }
-    }
+  //       const result = await response.data;
+  //       console.log("tarun result.data at after api/me", result.data);
+  //       setIsAdminLoggndIn(result.data);
+  //       // localStorage.setItem("adminLoggedIn", result.data.toString());
+  //     } catch (error) {
+  //       console.error("Error fetching admin login data:", error);
+  //       setIsAdminLoggndIn(false); // Set adminLoggedIn to false on error
+  //     }
+  //   }
 
-    fetchAdminLoginInfo();
-  }, []);
+  //   fetchAdminLoginInfo();
+  // }, [adminLoggedIn]);
 
   if (adminLoggedIn === null) {
     // Loading state, you can render a loading spinner or message here
@@ -84,6 +84,7 @@ export default function Home() {
 
   return (
     <div>
+      <InitUser></InitUser>
       <Appbar></Appbar>
       {adminLoggedIn ? (
         <div>
@@ -109,12 +110,18 @@ export default function Home() {
         <div>
           <Signin
             onClick={async (username, password) => {
-              console.log("tarun username in index siginin route");
+              console.log(
+                "tarun username in index siginin route",
+                username,
+                password
+              );
               const response = await axios.post("/api/signin", {
                 username,
                 password,
               });
               console.log("tarun token at sign in  ", response.data.token);
+              localStorage.setItem("token", response.data.token);
+
               if (response.data.token) {
                 setIsAdminLoggndIn(true);
                 router.push("/");
