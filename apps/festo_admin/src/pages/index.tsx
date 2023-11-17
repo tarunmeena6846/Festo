@@ -19,14 +19,19 @@ interface eventDataType {
   imageLink: string;
 }
 type eventArray = eventDataType[];
-export default function Home() {
+interface HomeProps {
+  events: eventArray;
+}
+const Home: React.FC<HomeProps> = ({ events: initialEvents }) => {
   const router = useRouter();
-  const [events, setEvents] = React.useState<eventArray>([]);
+  const [events, setEvents] = React.useState<eventArray>(initialEvents);
   const [adminLoggedIn, setIsAdminLoggndIn] = useRecoilState(isUserLoggedIn);
   console.log("tarun aadminlogin in index.ts", adminLoggedIn);
   useEffect(() => {
     async function fetchData() {
       try {
+        console.log("Component is mounted on the client side.");
+
         const response = await axios.get("/api/showevents");
         if (!response) {
           throw new Error("Network response was not ok");
@@ -40,44 +45,8 @@ export default function Home() {
 
     fetchData();
   }, []);
-
-  // useEffect(() => {
-  //   // const storedLoginStatus = localStorage.getItem("adminLoggedIn");
-  //   // console.log("tarun setIsAdminLoggndIn is ", storedLoginStatus);
-  //   // if (storedLoginStatus) {
-  //   //   setIsAdminLoggndIn(storedLoginStatus === "true");
-  //   //   return;
-  //   // }
-  //   async function fetchAdminLoginInfo() {
-  //     if (adminLoggedIn) {
-  //       return;
-  //     }
-  //     try {
-  //       const response = await axios.get("/api/me", {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: "Bearer " + localStorage.getItem("token"),
-  //         },
-  //       });
-
-  //       if (response.status !== 200) {
-  //         throw new Error("Admin not logged in");
-  //       }
-
-  //       const result = await response.data;
-  //       console.log("tarun result.data at after api/me", result.data);
-  //       setIsAdminLoggndIn(result.data);
-  //       // localStorage.setItem("adminLoggedIn", result.data.toString());
-  //     } catch (error) {
-  //       console.error("Error fetching admin login data:", error);
-  //       setIsAdminLoggndIn(false); // Set adminLoggedIn to false on error
-  //     }
-  //   }
-
-  //   fetchAdminLoginInfo();
-  // }, [adminLoggedIn]);
-
   if (adminLoggedIn === null) {
+    console.log("Component is mounted on the client side.");
     // Loading state, you can render a loading spinner or message here
     return <div>Loading...</div>;
   }
@@ -88,13 +57,6 @@ export default function Home() {
       <Appbar></Appbar>
       {adminLoggedIn ? (
         <div>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => router.push("/createEvent")}
-          >
-            Create
-          </Button>
           <div
             style={{
               display: "flex",
@@ -132,7 +94,7 @@ export default function Home() {
       )}
     </div>
   );
-}
+};
 
 // TODO make this SSR
 export function CoursesDisplay({ course }: { course: eventDataType }) {
@@ -188,3 +150,28 @@ export function CoursesDisplay({ course }: { course: eventDataType }) {
     </div>
   );
 }
+// SSR: Fetch data on the server side
+export async function getServerSideProps() {
+  try {
+    const response = await axios.get(
+      process.env.NEXT_PUBLIC_API_URL + "/showevents"
+    );
+    const events = await response.data;
+
+    return {
+      props: {
+        events,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error);
+
+    return {
+      props: {
+        events: [],
+      },
+    };
+  }
+}
+
+export default Home;

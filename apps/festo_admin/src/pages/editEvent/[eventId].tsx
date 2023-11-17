@@ -9,6 +9,8 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import React from "react";
 import axios from "axios";
+import MenuItem from "@mui/material/MenuItem";
+
 function editEvent() {
   const [events, setEvent] = React.useState();
   const router = useRouter();
@@ -111,6 +113,7 @@ function UpdateCard({ event, setEvent }) {
         description: description,
         imageLink: image,
         price: price,
+        category: category,
       },
       {
         headers: {
@@ -128,10 +131,12 @@ function UpdateCard({ event, setEvent }) {
       description: description,
       imageLink: image,
       price: price,
+      category: category,
     };
     // console.log("course id is ", updatedCourse._id);
     // console.log("Course Updated sucessfully ", updatedCourse);
     setEvent(updatedCourse);
+    router.push("/");
   };
   return (
     <div style={{ display: "flex", justifyContent: "left" }}>
@@ -190,6 +195,7 @@ function UpdateCard({ event, setEvent }) {
             />
             <br />
             <TextField
+              select
               onChange={(e) => {
                 setCategory(e.target.value);
               }}
@@ -197,7 +203,11 @@ function UpdateCard({ event, setEvent }) {
               variant="outlined"
               value={category}
               fullWidth
-            />
+            >
+              <MenuItem value="Movies">Movies</MenuItem>
+              <MenuItem value="Event">Event</MenuItem>
+              <MenuItem value="Party">Party</MenuItem>
+            </TextField>
             <br />
             <br />
             <Button
