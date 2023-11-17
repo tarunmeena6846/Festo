@@ -221,6 +221,8 @@ function UpdateCard({ event, setEvent }) {
             <Button
               onClick={async (e) => {
                 // alert("button clicked")
+                console.log(event._id);
+
                 const response = await axios.delete(
                   "/api/deleteevent/" + event._id,
                   {
