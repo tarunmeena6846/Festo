@@ -9,7 +9,15 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   await ensureDbConnected();
-  const events = await Event.find({});
-  console.log("tarun", events);
+  const { category } = req.query;
+  let events;
+  console.log("tarun at showevent category is ", category);
+  if (category && category !== "All") {
+    // Fetch events based on the category
+    events = await Event.find({ category });
+  } else {
+    events = await Event.find({});
+  }
+  console.log("tarun at filter events", events);
   res.status(201).json(events);
 }
