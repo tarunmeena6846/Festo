@@ -72,10 +72,6 @@ const Home: React.FC<HomeProps> = () => {
             <FilterBar
               categories={categories}
               selectedCategory={selectedCategory}
-              onSelectCategory={(category) => {
-                console.log("tarun at onselectcategroy", category);
-                router.push(`/?category=${encodeURIComponent(category)}`);
-              }}
             />
           </Grid>
           <Grid item xs={9}>
