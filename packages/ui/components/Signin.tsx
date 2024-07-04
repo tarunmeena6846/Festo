@@ -84,20 +84,56 @@ export function Signin(props) {
               />
             </Grid>
           </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
+          <div
             style={{
-              backgroundColor: "rgb(51, 53, 69)",
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
             }}
-            sx={{ mt: 3, mb: 2 }}
           >
-            Sign In
-          </Button>
-          <Typography style={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              style={{
+                backgroundColor: "rgb(51, 53, 69)",
+              }}
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign In
+            </Button>
+            {/* <Typography style={{ display: "flex", justifyContent: "center" }}>
             OR
-          </Typography>
+          </Typography> */}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              style={{
+                backgroundColor: "rgb(51, 53, 69)",
+              }}
+              // sx={{ mt: 3, mb: 2 }}
+            >
+              Sign In As Artist
+            </Button>
+            {/* <Typography style={{ display: "flex", justifyContent: "center" }}>
+            OR
+          </Typography> */}
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              style={{
+                backgroundColor: "rgb(51, 53, 69)",
+              }}
+              sx={{ mt: 2, mb: 2 }}
+            >
+              Sign In As Restaurant
+            </Button>
+            <Typography style={{ display: "flex", justifyContent: "center" }}>
+              OR
+            </Typography>
+          </div>
           <Button
             type="button"
             fullWidth

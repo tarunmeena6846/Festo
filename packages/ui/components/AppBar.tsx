@@ -19,6 +19,8 @@ import { Button } from "@mui/material";
 import Location from "./Location";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { useRecoilState } from "recoil";
+import { isUserLoggedIn } from "../../../apps/fexst_artist/src/store/atoms/user";
 
 // 1.TODO changes this to include state varaibles so that appBar renders
 // based on wheater user is signed in or not
@@ -65,6 +67,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export function Appbar() {
   // let isSignedIn = false;
   let UserName;
+  const [adminLoggedIn, setIsAdminLoggndIn] = useRecoilState(isUserLoggedIn);
+  console.log("tarun in appbar.js", adminLoggedIn.isAdmin);
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -73,6 +78,10 @@ export function Appbar() {
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    console.log("tarun adminLoggedin", adminLoggedIn);
+    // if (!adminLoggedIn) {
+    //   return;
+    // }
     setAnchorEl(event.currentTarget);
   };
 
@@ -89,6 +98,7 @@ export function Appbar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
   const router = useRouter();
+  // Next auth lib session
   const session = useSession();
 
   if (session) {
@@ -123,7 +133,17 @@ export function Appbar() {
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
       <MenuItem
         onClick={() => {
+          console.log(localStorage.getItem("token"));
           signOut();
+          console.log("tarun adminLoggedIN in appbar", adminLoggedIn);
+          if (adminLoggedIn.isAdmin) {
+            console.log("tarun adminLoggedIN in appbar", adminLoggedIn.isAdmin);
+
+            router.push("/");
+            setIsAdminLoggndIn({ isLoading: false, isAdmin: false });
+            setAnchorEl(null);
+          }
+          localStorage.setItem("token", "");
         }}
       >
         Logout
@@ -256,18 +276,36 @@ export function Appbar() {
                 <AccountCircle />
               </IconButton>
               <Typography style={{ paddingTop: 12 }}>Hi Guest</Typography>
-              <Button
-                size="large"
-                style={{
-                  color: "white",
-                  textTransform: "none", // Set textTransform to 'none'
-                }}
-                onClick={() => {
-                  router.push("/signin");
-                }}
-              >
-                Sign In
-              </Button>
+              {adminLoggedIn.isAdmin ? (
+                <Button
+                  size="large"
+                  style={{
+                    color: "white",
+                    textTransform: "none", // Set textTransform to 'none'
+                  }}
+                  onClick={() => router.push("/createEvent")}
+                >
+                  Create Event
+                </Button>
+              ) : (
+                <></>
+              )}
+              {!adminLoggedIn.isAdmin ? (
+                <Button
+                  size="large"
+                  style={{
+                    color: "white",
+                    textTransform: "none", // Set textTransform to 'none'
+                  }}
+                  onClick={() => {
+                    router.push("/signin");
+                  }}
+                >
+                  Sign In
+                </Button>
+              ) : (
+                <></>
+              )}
             </Box>
           )}
 
